@@ -279,7 +279,7 @@ $get_data = mysqli_query($conn, "SELECT * FROM tb_media WHERE kategori = '$kateg
           swal({
             title: 'Berhasil terhapus',
             text: 'Data media berhasil dihapus',
-            icon: 'success'
+            type: 'success'
           }).then(function() {
             location.href = 'detail_media.php?view=<?= $_GET["view"] ?>';
           });
@@ -367,7 +367,7 @@ $get_data = mysqli_query($conn, "SELECT * FROM tb_media WHERE kategori = '$kateg
           swal({
             title: 'Berhasil diupdate',
             text: 'Data baru berhasil diupdate',
-            icon: 'success'
+            type: 'success'
           }).then(function() {
             location.href = 'detail_media.php?view=<?= $_GET["view"] ?>';
           });;

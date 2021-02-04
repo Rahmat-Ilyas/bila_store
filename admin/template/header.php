@@ -21,6 +21,9 @@ $username_reseller = $get_reseller['username'];
   <title>Admin - BilaStore</title>
   <link href="../front/img/tes1.png" rel="icon">
 
+  <link rel="stylesheet" href="../assets/modules/dropzone/min/basic.min.css">
+  <link rel="stylesheet" href="../assets/modules/dropzone/min/dropzone.min.css">
+
   <!-- General CSS Files -->
   <link rel="stylesheet" href="../assets/modules/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/modules/fontawesome/css/all.min.css">

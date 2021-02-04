@@ -99,6 +99,9 @@
 <!-- Page Specific JS File -->
 <script src="../assets/js/page/modules-datatables.js"></script>
 <script src="../assets/modules/sweetalert/sweetalert.min.js"></script>
+<script src="../assets/modules/sweetalert2/sweetalert2.all.min.js"></script>
+
+<script src="../assets/modules/dropzone/min/dropzone.min.js"></script>
 
 <!-- Template JS File -->
 <script src="../assets/js/scripts.js"></script>

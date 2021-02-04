@@ -34,7 +34,7 @@ require('template/header.php');
 </div>
 
 <!-- MODAL TAMBAH -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-tambah">
+<!-- <div class="modal fade" tabindex="-1" role="dialog" id="modal-tambah">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -85,9 +85,121 @@ require('template/header.php');
     </div>
   </div>
 </div>
+-->
+
+<div class="modal fade" role="dialog" id="modal-tambah">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tambahkan Media</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </form>
+    <form method="POST" id="formUpload">
+      <div class="modal-body px-5" style="margin-bottom: -20px;">
+        <div class="form-group">
+          <label>Kategori</label>
+          <select class="form-control" name="kategori" id="set-kategori" required="">
+            <option value="">--Pilih Kategori--</option>
+            <?php 
+            $result = mysqli_query($conn, "SELECT * FROM tb_kategori");
+            foreach ($result as $ktgr) { ?>
+              <option value="<?= $ktgr['kategori'] ?>"><?= $ktgr['kategori'] ?></option>
+            <?php } ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>File Media</label>
+          <div class="dropzone dropzone-previews" id="my-awesome-dropzone"></div>
+        </div>
+        <div class="form-group">
+          <div class="mt-3 row" style="margin-bottom: -15px;" id="viewProgress" hidden="">
+            <span class="col-6">Mengapload...</span>
+            <span class="col-6 text-right"><b><i id="progress">0%</i></b></span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-whitesmoke br">
+        <input type="hidden" name="req" value="addData">
+        <button type="submit" id="upload" class="btn btn-primary">Upload</button>
+        <button type="button" id="batal" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
 
 <script>
   $(document).ready(function() {
+    var formData = new FormData();
+    var chek = 0;
+    $(".dropzone-previews").dropzone({ 
+      url: "controller.php",
+      paramName: 'file[]',
+      maxFilesize: 20,
+      acceptedFiles: 'image/*, video/*',
+      dictDefaultMessage: 'Klik untuk memilih file',
+      // addRemoveLinks: true,
+      dictRemoveFile: '<a href="#" class="btn btn-link btn-sm"><i class="fa fa-trash"></i> Hapus</a>',
+      accept: function(file, done) {
+        if (file) {
+          console.log(file);
+          Swal.fire({
+            title: "Tambah Deskripsi Media",
+            html: `<form id="thisalatKembali">
+                    <div class="text-left">
+                      <div class="form-group row justify-content-center">
+                        <div class="col-sm-10">
+                          <label>Nama Label</label>
+                          <input id="swal-lable" type="text" class="form-control" required="" name="label" placeholder="Masukkan Nama Label.." autocomplete="off">
+                        </div>
+                        <div class="col-sm-10 mt-4">
+                          <label>Keterangan Harga (Rp)</label>
+                          <input id="swal-harga" type="number" class="form-control" required="" name="harga" placeholder="Keterangan Harga (Rp)..">
+                        </div>
+                      </div>
+                    </div>
+                  </form>`,
+            confirmButtonText: 'Selesai&nbsp<i class="fa fa-check"></i>',
+            focusConfirm: false,
+            preConfirm: () => {
+              var data = {};
+              data.label = document.getElementById('swal-lable').value;
+              data.harga = document.getElementById('swal-harga').value;
+              return data;
+            }
+          }).then((result) => {
+            if (!result.value || result.value.label == '' || result.value.harga == '') {
+              Swal.fire({
+                title: 'Inputan Kosong',
+                text: 'Inputan tidak boleh kosong. Silahkan pilh kembali!',
+                type: 'warning'
+              });
+              this.removeFile(file);
+            } else {
+              formData.append('file_media[]', file);
+              formData.append('label[]', result.value.label);
+              formData.append('harga[]', result.value.harga);
+              if (file.type == 'image/jpeg' || file.type == 'image/png' || file.type == 'image/bmp') formData.append('ext_type[]', 'Foto');
+              else formData.append('ext_type[]', 'Video');
+              chek = chek + 1;
+            }
+          });
+          done();
+        }
+      },
+      error: function(file, error) {
+        Swal.fire({
+          title: 'Terjadi Kesalahan',
+          text: error,
+          type: 'error'
+        });
+        this.removeFile(file);
+      }
+    });
+
     $('#kelola_media').addClass('active');
     
     $('#modal-tambah').modal({
@@ -99,7 +211,17 @@ require('template/header.php');
     // ADD DATA
     $('#formUpload').submit(function(e) {
       e.preventDefault();
-      var data = new FormData($('#formUpload')[0]);
+      if (chek == 0) {
+        Swal.fire({
+          title: 'Belum Ada File!',
+          text: 'Pastikan anda telah melampirkan file media',
+          type: 'warning'
+        });
+        return
+      }
+      formData.append('req', 'addData');
+      formData.append('kategori', $('#set-kategori').val());
+      var data = formData;
 
       $.ajax({
         url     : 'controller.php',
@@ -130,12 +252,15 @@ require('template/header.php');
           $('#batal').removeAttr('disabled');
           $('#progress').text('0%');
 
-          swal({
+          Swal.fire({
             title: 'Berhasil ditambah',
             text: 'Data baru berhasil ditambah',
-            icon: 'success'
+            type: 'success'
           });
 
+          Dropzone.forElement(".dropzone-previews").removeAllFiles(true);
+          formData = new FormData();
+          chek = 0;
           $('#modal-tambah').modal('hide');
         }
       });
@@ -157,10 +282,10 @@ require('template/header.php');
         success : function(data) {
           viewData();
           $('#modal-hapus').modal('hide');
-          swal({
+          Swal.fire({
             title: 'Berhasil terhapus',
             text: 'Data media berhasil dihapus',
-            icon: 'success'
+            type: 'success'
           });
         }
       });
@@ -184,36 +309,6 @@ require('template/header.php');
         }
       });
     }
-
-    // FILE MEDIA VALIDASI
-    $('#file_media').change(function() {
-      var media = $('#file_media').prop('files')[0];
-      var check = 0;
-
-      var ext = ['image/jpeg', 'image/png', 'image/bmp', 'video/3gpp', 'video/mp4', 'video/x-matroska', 'video/x-msvideo', 'video/quicktime'];
-
-      $.each(ext, function(key, val) {
-        if (media.type == val) check = check + 1;
-
-        if (media.type == 'image/jpeg' || media.type == 'image/png' || media.type == 'image/bmp') $('#ext_type').val('Foto');
-        else $('#ext_type').val('Video');
-      });
-
-      if (check == 1) {
-        $('.cek-media').attr('hidden', '');
-      } else {
-        $('.cek-media').removeAttr('hidden');
-        $('.cek-media').text('Format file tidak dibolehkan, pilih file lain');
-        $(this).val('');
-        return;
-      }
-
-      if (media.size > 20000000) {
-        $('.cek-media').removeAttr('hidden');
-        $('.cek-media').text('Ukuran file minimal 5 Mb, pilih file lain');
-        $(this).val('');
-      }
-    });
 
     $('.modal').on('hidden.bs.modal', function() {
       $('#formUpload').trigger('reset');
