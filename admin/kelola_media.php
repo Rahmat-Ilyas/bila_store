@@ -34,59 +34,6 @@ require('template/header.php');
 </div>
 
 <!-- MODAL TAMBAH -->
-<!-- <div class="modal fade" tabindex="-1" role="dialog" id="modal-tambah">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Tambahkan Media</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form method="POST" id="formUpload">
-        <div class="modal-body px-5" style="margin-bottom: -20px;">
-          <div class="form-group">
-            <label>Nama Label</label>
-            <input type="text" class="form-control" name="label" required autocomplete="off" placeholder="Masukkan Nama Label">
-          </div>
-          <div class="form-group">
-            <label>Kategori</label>
-            <select class="form-control" name="kategori" required="">
-              <option value="">--Pilih Kategori--</option>
-              <?php 
-              $result = mysqli_query($conn, "SELECT * FROM tb_kategori");
-              foreach ($result as $ktgr) { ?>
-                <option value="<?= $ktgr['kategori'] ?>"><?= $ktgr['kategori'] ?></option>
-              <?php } ?>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Keterangan Harga (Rp)</label>
-            <input type="number" class="form-control" name="harga" required autocomplete="off" placeholder="Keterangan Harga (Rp)">
-          </div>
-          <div class="form-group">
-            <label>File Media</label>
-            <input type="file" class="form-control" id="file_media" name="file_media" required>
-            <div class="text-danger cek-media" hidden=""></div>
-
-            <div class="mt-3 row" style="margin-bottom: -15px;" id="viewProgress" hidden="">
-              <span class="col-6">Mengapload...</span>
-              <span class="col-6 text-right"><b><i id="progress">0%</i></b></span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer bg-whitesmoke br">
-          <input type="hidden" name="ext_type" id="ext_type">
-          <input type="hidden" name="req" value="addData">
-          <button type="submit" id="upload" class="btn btn-primary">Upload</button>
-          <button type="button" id="batal" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
--->
-
 <div class="modal fade" role="dialog" id="modal-tambah">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
