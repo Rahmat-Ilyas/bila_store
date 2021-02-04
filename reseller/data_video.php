@@ -37,10 +37,10 @@ foreach ($result as $dta) {
                     $arial = 'false';
                   } ?>
                   <div class="accordion">
-                    <div class="accordion-header" role="button" data-toggle="collapse" data-target="#<?= $kat.$i ?>" aria-expanded="<?= $arial ?>">
+                    <div class="accordion-header" role="button" data-toggle="collapse" data-target="#<?= $i ?>" aria-expanded="<?= $arial ?>">
                       <h4>Vide Produk (<?= $kat ?>)</h4>
                     </div>
-                    <div class="accordion-body collapse <?= $show ?>" id="<?= $kat.$i ?>" data-parent="#accordion">
+                    <div class="accordion-body collapse <?= $show ?>" id="<?= $i ?>" data-parent="#accordion">
                       <div class="row">
                         <?php 
                         $get_data = mysqli_query($conn, "SELECT * FROM tb_media WHERE kategori = '$kat' AND ext_type='Video'"); 
