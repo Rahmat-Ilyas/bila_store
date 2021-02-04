@@ -86,7 +86,7 @@ require('template/header.php');
       url: "controller.php",
       paramName: 'file[]',
       maxFilesize: 20,
-      timeout: 180000,
+      timeout: 60000*120,
       acceptedFiles: 'image/*, video/*',
       dictDefaultMessage: 'Klik untuk memilih file',
       // addRemoveLinks: true,
@@ -260,6 +260,7 @@ require('template/header.php');
 
     $('.modal').on('hidden.bs.modal', function() {
       $('#formUpload').trigger('reset');
+      Dropzone.forElement(".dropzone-previews").removeAllFiles(true);
     });
 
     $(document).on('click', '#view-image', function() {
