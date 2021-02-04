@@ -86,6 +86,7 @@ require('template/header.php');
       url: "controller.php",
       paramName: 'file[]',
       maxFilesize: 20,
+      timeout: 180000,
       acceptedFiles: 'image/*, video/*',
       dictDefaultMessage: 'Klik untuk memilih file',
       // addRemoveLinks: true,
