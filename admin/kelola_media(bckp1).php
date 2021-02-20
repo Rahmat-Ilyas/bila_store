@@ -58,14 +58,6 @@ require('template/header.php');
           </select>
         </div>
         <div class="form-group">
-          <label>Nama Label</label>
-          <input type="text" class="form-control" id="label" required="" name="label" placeholder="Masukkan Nama Label.." required="" autocomplete="off">
-        </div>
-        <div class="form-group">
-          <label>Keterangan Harga (Rp)</label>
-          <input type="number" class="form-control" id="harga" required="" name="harga" placeholder="Keterangan Harga (Rp).." required="">
-        </div>
-        <div class="form-group">
           <label>File Media</label>
           <div class="dropzone dropzone-previews" id="my-awesome-dropzone"></div>
         </div>
@@ -101,12 +93,50 @@ require('template/header.php');
       dictRemoveFile: '<a href="#" class="btn btn-link btn-sm"><i class="fa fa-trash"></i> Hapus</a>',
       accept: function(file, done) {
         if (file) {
-          formData.append('file_media[]', file);
-          if (file.type == 'image/jpeg' || file.type == 'image/png' || file.type == 'image/bmp') formData.append('ext_type[]', 'Foto');
-          else formData.append('ext_type[]', 'Video');
-          chek = chek + 1;
+          console.log(file);
+          Swal.fire({
+            title: "Tambah Deskripsi Media",
+            html: `<form id="thisalatKembali">
+                    <div class="text-left">
+                      <div class="form-group row justify-content-center">
+                        <div class="col-sm-10">
+                          <label>Nama Label</label>
+                          <input id="swal-lable" type="text" class="form-control" required="" name="label" placeholder="Masukkan Nama Label.." autocomplete="off">
+                        </div>
+                        <div class="col-sm-10 mt-4">
+                          <label>Keterangan Harga (Rp)</label>
+                          <input id="swal-harga" type="number" class="form-control" required="" name="harga" placeholder="Keterangan Harga (Rp)..">
+                        </div>
+                      </div>
+                    </div>
+                  </form>`,
+            confirmButtonText: 'Selesai&nbsp<i class="fa fa-check"></i>',
+            focusConfirm: false,
+            preConfirm: () => {
+              var data = {};
+              data.label = document.getElementById('swal-lable').value;
+              data.harga = document.getElementById('swal-harga').value;
+              return data;
+            }
+          }).then((result) => {
+            if (!result.value || result.value.label == '' || result.value.harga == '') {
+              Swal.fire({
+                title: 'Inputan Kosong',
+                text: 'Inputan tidak boleh kosong. Silahkan pilh kembali!',
+                type: 'warning'
+              });
+              this.removeFile(file);
+            } else {
+              formData.append('file_media[]', file);
+              formData.append('label[]', result.value.label);
+              formData.append('harga[]', result.value.harga);
+              if (file.type == 'image/jpeg' || file.type == 'image/png' || file.type == 'image/bmp') formData.append('ext_type[]', 'Foto');
+              else formData.append('ext_type[]', 'Video');
+              chek = chek + 1;
+            }
+          });
+          done();
         }
-        done();
       },
       error: function(file, error) {
         Swal.fire({
@@ -137,10 +167,7 @@ require('template/header.php');
         });
         return
       }
-
       formData.append('req', 'addData');
-      formData.append('label', $('#label').val());
-      formData.append('harga', $('#harga').val());
       formData.append('kategori', $('#set-kategori').val());
       var data = formData;
 

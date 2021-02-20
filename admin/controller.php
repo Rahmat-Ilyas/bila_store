@@ -58,22 +58,47 @@ if (isset($_POST['req'])) {
 		$kategori = $_POST['kategori'];
 		$ext_type = $_POST['ext_type'];
 
-		foreach ($label as $i => $lab) {
+		foreach ($ext_type as $i => $lab) {
+			$no = $i + 1;
+			$label_fix = $label.'-'.$no;
 			// SET FOTO 
 			$media = $_FILES['file_media']['name'][$i];
 			$tanggal = date('Y-m-d H:i:s');
 			$ext = pathinfo($media, PATHINFO_EXTENSION);
-			$file_name = str_replace(' ', '-', $label[$i])."-".time().".".$ext;
+			$file_name = str_replace(' ', '-', $label_fix)."-".time().".".$ext;
 			$file_tmp = $_FILES['file_media']['tmp_name'][$i];
 
     		// TAMBAH DATA 
-			$query = "INSERT INTO tb_media VALUES (NULL, '$label[$i]', '$harga[$i]', '$kategori', '$file_name', '$ext_type[$i]', '$tanggal')";
+			$query = "INSERT INTO tb_media VALUES (NULL, '$label_fix', '$harga', '$kategori', '$file_name', '$ext_type[$i]', '$tanggal')";
 			mysqli_query($conn, $query);
 			if (mysqli_affected_rows($conn) > 0) {
 				move_uploaded_file($file_tmp, '../front/img/produk/'.$file_name);
+			} else {
+				var_dump(mysqli_error($conn));
 			}
 		}
-		echo json_encode(true);
+		echo json_encode(false);
+		// $label = $_POST['label'];
+		// $harga = $_POST['harga'];
+		// $kategori = $_POST['kategori'];
+		// $ext_type = $_POST['ext_type'];
+
+		// foreach ($label as $i => $lab) {
+		// 	// SET FOTO 
+		// 	$media = $_FILES['file_media']['name'][$i];
+		// 	$tanggal = date('Y-m-d H:i:s');
+		// 	$ext = pathinfo($media, PATHINFO_EXTENSION);
+		// 	$file_name = str_replace(' ', '-', $label[$i])."-".time().".".$ext;
+		// 	$file_tmp = $_FILES['file_media']['tmp_name'][$i];
+
+  //   		// TAMBAH DATA 
+		// 	$query = "INSERT INTO tb_media VALUES (NULL, '$label[$i]', '$harga[$i]', '$kategori', '$file_name', '$ext_type[$i]', '$tanggal')";
+		// 	mysqli_query($conn, $query);
+		// 	if (mysqli_affected_rows($conn) > 0) {
+		// 		move_uploaded_file($file_tmp, '../front/img/produk/'.$file_name);
+		// 	}
+		// }
+		// echo json_encode(true);
 	} else if($_POST['req'] == 'addDatarev') {
 		$label = $_POST['label'];
 		$harga = $_POST['harga'];
